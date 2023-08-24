@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="record-container">
+    {% if error_message %}
+    <p>{{ error_message }}</p>
+    {% elif games %}
+
+    {% for game in games %}
+    <div class="game-history">
+        <span id="id">Played: </span>: </span>{{ game.game_created }}
+        <span id="tries">Bad tries: </span>{{ game.game_tries }}
+        <span id="word">Word: {{ game.game_word }}</span>
+        <span class="align-right" id="status">{{ game.status }}</span>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>No games available.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

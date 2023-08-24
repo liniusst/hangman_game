@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="" enctype="multipart/form-data">
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Account information</legend>
+            <div class="card-container">
+                <div class="account-card">
+                    <legend class="border-bottom mb-4">Information</legend>
+                    <div class="account-info">
+                        <span class="label">ID:</span> {{ account.id }}
+                    </div>
+                    <div class="account-info">
+                        <span class="label">Username:</span> {{ account.username }}
+                    </div>
+                    <div class="account-info">
+                        <span class="label">Email:</span> {{ account.email }}
+                    </div>
+                    <div class="account-info">
+                        <span class="label">Joined:</span> {{ account.created }}
+                    </div>
+
+                </div>
+
+                <div class="account-card">
+                    <legend class="border-bottom mb-4">Games stats</legend>
+                    <div class="account-info">
+                        <span class="label">Total games:</span> {{ stats.total_games }}
+                    </div>
+                    <div class="account-info">
+                        <span class="label">Win:</span> {{ stats.total_win }}
+                    </div>
+                    <div class="account-info">
+                        <span class="label">Loss:</span> {{ stats.total_loss }}
+                    </div>
+                    <div class="account-info">
+                        <span class="label">Not ended:</span> {{ stats.total_new }}
+                    </div>
+                </div>
+            </div>
+            <div class="button button-info"><a href="{{ url_for('account_update') }}" class="button">Update account
+                    information</a>
+            </div>
+            <div class="button button-info"><a href="{{ url_for('password_change') }}" class="button">Change
+                    password</a></div>
+        </fieldset>
+    </form>
+    <legend class="border-bottom mb-4">Last 5 games</legend>
+    {% if last_five_games %}
+    {% for game in last_five_games %}
+    <div class="game-history">
+        <span id="id">Played: </span>: </span>{{ game.game_created }}
+        <span id="tries">Bad tries: </span>{{ game.game_tries }}
+        <span id="word">Word: {{ game.game_word }}</span>
+        <span class="align-right" id="status">{{ game.status }}</span>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>No games available.</p>
+    {% endif %}
+</div>
+{% endblock content %}

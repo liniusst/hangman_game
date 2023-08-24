@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <table style="z-index: -1;">
+        <tr>
+            <td colspan="2">
+                <h1>Game information</h1>
+                <h3>Let's see your game information<br /></h3>
+            </td>
+        </tr>
+        <tr>
+            <td><img id="game_draw" src="{{game_draw}}" />
+                <div id="status_text">
+                    {% if game_status == "WIN" %}
+                    <p style="color: green;">WON</p>
+                    {% else %}
+                    <p style="color: red;">LOSS</p>
+                    {% endif %}
+                </div>
+            </td>
+            <td>
+                <div
+                    style="border: 1px solid #000; border-radius: 5px; padding: 10px; width: 220px; height: 305px;text-align: center;">
+                    <h3>Game stats</h3>
+                    <p>Bad tries</p>
+                    <p style="font-size: 30px;">{{game_tries}}</p>
+                    <p style="border-top: 1px solid #000; padding-top: 10px;">Left guesses</p>
+                    <p style="font-size: 45px;">{{7 - game_tries}}</p>
+                </div>
+            </td>
+            <td>
+                <div
+                    style="margin-left: 20px; border: 1px solid #000; border-radius: 5px; padding: 10px; width: 220px; height: 305px;text-align: center;">
+                    <h3>Your guesses</h3>
+                    <p style="font-size: 25px;">
+                        {% for guess in user_guesses%}
+                        {{guess}}
+                        {% endfor %}
+                    </p>
+                    </p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div style="font-size: 40px">
+                    Your word was: {% for i in game_word %}
+                    <span> {{i}} </span>
+                    {% endfor %}
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div class="button button-info"><a href="{{ url_for('game') }}" class="button">Start new game</a></div>
+</div>
+
+{% endblock content %}
