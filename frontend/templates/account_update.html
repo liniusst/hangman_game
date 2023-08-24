@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Account information</legend>
+            <div class="form-group">
+                {{ form.username.label(class="form-control-label") }}
+                {% if form.username.errors %}
+                {{ form.username(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.username.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.username(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.email.label(class="form-control-label") }}
+                {% if form.email.errors %}
+                {{ form.email(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.email(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="button button-update">
+            {{ form.submit(class="button") }}
+        </div>
+        <div class="button button-info"><a href="{{ url_for('account') }}" class="button">back to my account</a></div>
+    </form>
+</div>
+{% endblock content %}

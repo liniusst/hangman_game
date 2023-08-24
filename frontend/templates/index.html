@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-index">
+    <h1>Playing Hangman</h1>
+    <p>Hangman is an old school favorite, a word game where the goal is simply to find the missing word.</p>
+    <p>You will be presented with a number of blank spaces representing the missing letters you need to find.</p>
+    <p>Use the mouse to guess a letter.</p>
+    <p>If your chosen letter exists in the answer, then all plaaces in the answer where that letter appear will be
+        revealed.</p>
+    <p>After you've revealed several letters, you may be able to guess what the answer is and fill in the remaining
+        letters.</p>
+    <p>Solve the puzzle before the hangman dies, you have 10 attempts</p>
+
+    <div class="button button-info"><a href="{{ url_for('game') }}" class="button" role="button">Start Game</a></div>
+</div>
+
+{% endblock %}

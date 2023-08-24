@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<body>
+    <table>
+        <tr>
+            <td colspan="2">
+                <h1>Let's Play Hangman</h1>
+                <h3>You have 10 tries to guess a word<br /></h3>
+            </td>
+        </tr>
+        <tr>
+            <td><img src="{{game_draw}}" /></td>
+            <td>
+                <div
+                    style="border: 1px solid #000; border-radius: 5px; padding: 10px; width: 220px; height: 305px;text-align: center;">
+                    <h3>Game stats</h3>
+                    <p>Bad tries</p>
+                    <p style="font-size: 30px;">{{game_tries}}</p>
+                    <p style="border-top: 1px solid #000; padding-top: 10px;">Left guesses</p>
+                    <p style="font-size: 45px;">{{7 - game_tries}}</p>
+                </div>
+            </td>
+            <td>
+                <div
+                    style="margin-left: 20px; border: 1px solid #000; border-radius: 5px; padding: 10px; width: 220px; height: 305px;text-align: center;">
+                    <h3>Your guesses</h3>
+                    <p style="font-size: 25px;">
+                        {% for guess in user_guesses%}
+                        {{guess}}
+                        {% endfor %}
+                    </p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div style="font-size: 40px">
+                    Your word is: {% for i in game_display %}
+                    <span> {{i}} </span>
+                    {% endfor %}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div>
+        {% for letter in game_word_set %}
+        <form action="{{ url_for('play_game') }}" method="post" style="display: inline;">
+            <button type="submit" class="button-guess" name="letter" value="{{ letter }}">{{ letter }}</button>
+        </form>
+        {% endfor %}
+    </div>
+</body>
+
+{% endblock %}
