@@ -1,4 +1,4 @@
-import logging
+from backend.logs.logger import logger
 from datetime import datetime
 from backend.models.game import Game
 from backend.models.guess import Guess
@@ -20,13 +20,14 @@ def create_guess(db: Session, game_id: int, letter: str) -> Guess:
             db.commit()
             db.refresh(user_guess)
             return user_guess
-
         else:
+            logger.error(NoResultFound)
             raise NoResultFound("Game not found for guess creation")
-    except TypeError:
+    except TypeError as error:
+        logger.exception(error)
         raise TypeError("Game not found for guess creation")
     except Exception as error:
-        logging.error(error)
+        logger.exception(error)
         db.rollback()
         return None
 
@@ -37,7 +38,8 @@ def get_guesses_by_game_id(db: Session, game_id: int) -> Guess:
         if game:
             return game.guesses
         else:
+            logger.error(NoResultFound)
             raise NoResultFound("Game not found for guesses retrieval")
     except Exception as error:
-        logging.error(error)
+        logger.exception(error)
         return []
