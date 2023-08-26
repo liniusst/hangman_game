@@ -12,12 +12,10 @@ services:
       - 1337:1337
     depends_on:
       - database
-    environment:
-      - SQLALCHEMY_DATABASE_URI=postgresql://hangman:h4ngm4npa55w0rd@hangman_database:5432/hangman_db
-      - SQLALCHEMY_MAX_POOL_OVERFLOW=20
+    env_file:
+      - .env
     networks:
       - development
-    command: python -m unittest -v
 
   database:
     container_name: hangman_database
@@ -26,10 +24,8 @@ services:
       - postgre:/var/lib/postgresql/data/
     expose:
       - 5432
-    environment:
-      - POSTGRES_USER=hangman
-      - POSTGRES_PASSWORD=h4ngm4npa55w0rd
-      - POSTGRES_DB=hangman_db
+    env_file:
+      - .env
     networks:
       - development
 
