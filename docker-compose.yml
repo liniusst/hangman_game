@@ -17,6 +17,7 @@ services:
       - SQLALCHEMY_MAX_POOL_OVERFLOW=20
     networks:
       - development
+    command: python -m unittest -v
 
   database:
     container_name: hangman_database
