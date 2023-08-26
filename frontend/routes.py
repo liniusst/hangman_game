@@ -1,7 +1,7 @@
-import forms
-import models
+import frontend.forms as forms
+import frontend.models as models
 import requests
-from app import app, bcrypt
+from frontend.app import app, bcrypt
 from flask import flash
 from flask import redirect
 from flask import render_template
@@ -12,7 +12,7 @@ from flask_login import login_required
 from flask_login import login_user
 from flask_login import LoginManager
 from flask_login import logout_user
-from logs.logger import logger
+from frontend.logs.logger import logger
 
 login_manager = LoginManager(app)
 

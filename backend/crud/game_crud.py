@@ -1,9 +1,8 @@
 import logging
 from typing import Optional
-
-import app.schemas.games_schemas as game_schemas
-from app.models.account import Account
-from app.models.game import Game
+import backend.schemas.games_schemas as game_schemas
+from backend.models.account import Account
+from backend.models.game import Game
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound

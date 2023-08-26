@@ -1,12 +1,13 @@
-import app.crud.account_crud as account_crud
-from app.database import get_db
-from app.schemas.account_schemas import AccountCreate
-from app.schemas.account_schemas import AccountResponse
-from app.schemas.account_schemas import AccountUpdate
+import backend.crud.account_crud as account_crud
+from backend.database import get_db
+from backend.schemas.account_schemas import AccountCreate
+from backend.schemas.account_schemas import AccountResponse
+from backend.schemas.account_schemas import AccountUpdate
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
+
 
 router = APIRouter()
 
