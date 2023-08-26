@@ -1,4 +1,4 @@
-import logging
+from backend.logs.logger import logger
 from typing import Optional
 import backend.schemas.games_schemas as game_schemas
 from backend.models.account import Account
@@ -14,7 +14,7 @@ def get_game(db: Session, game_id: int) -> Game:
     except NoResultFound:
         return None
     except Exception as error:
-        logging.error(error)
+        logger.exception(error)
         return None
     return game
 
@@ -30,11 +30,13 @@ def get_user_last_five_games(db: Session, user_id: int) -> list[Game]:
                 .limit(5)
                 .all()
             )
+            logger.debug("Last 5 games returned")
             return games
         else:
+            logger.error(NoResultFound)
             raise NoResultFound("User not found")
     except Exception as error:
-        logging.error(error)
+        logger.exception(error)
         return []
 
 
@@ -42,11 +44,19 @@ def get_games_by_user_id(db: Session, user_id: int) -> Account:
     try:
         user = db.query(Account).filter(Account.id == user_id).first()
         if user:
-            return user.games
+            games = (
+                db.query(Game)
+                .filter(Game.account_id == user_id)
+                .order_by(desc(Game.game_created))
+                .all()
+            )
+            logger.debug("Games by user_id returned")
+            return games
         else:
+            logger.error(NoResultFound)
             raise NoResultFound("User not found")
     except Exception as error:
-        logging.error(error)
+        logger.exception(error)
         return []
 
 
@@ -59,6 +69,7 @@ def get_user_games_stats(db: Session, user_id: int):
         if user:
             games = user.games
         else:
+            logger.error(NoResultFound)
             raise NoResultFound("User not found")
 
         for game in games:
@@ -75,10 +86,10 @@ def get_user_games_stats(db: Session, user_id: int):
             "total_loss": len(loss_games),
             "total_new": len(new_games),
         }
+        logger.debug("Games stats returned")
         return stats
-
     except Exception as error:
-        logging.error(error)
+        logger.error(error)
         return None
 
 
@@ -92,10 +103,12 @@ def update_game(
             for key, value in game_data.items():
                 setattr(db_game, key, value)
             db.commit()
+            logger.debug("Game updated")
             return db_game
         else:
+            logger.error(NoResultFound)
             raise NoResultFound("Game not found for update")
     except Exception as error:
-        logging.error(error)
+        logger.error(error)
         db.rollback()
         return None

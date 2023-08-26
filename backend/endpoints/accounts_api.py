@@ -1,4 +1,5 @@
 import backend.crud.account_crud as account_crud
+from backend.logs.logger import logger
 from backend.database import get_db
 from backend.schemas.account_schemas import AccountCreate
 from backend.schemas.account_schemas import AccountResponse
@@ -16,7 +17,9 @@ router = APIRouter()
 def create_account(account: AccountCreate, db: Session = Depends(get_db)):
     db_account = account_crud.get_account_by_email(db, email=account.email)
     if db_account:
+        logger.error("Account not found")
         raise HTTPException(status_code=400, detail="Email already registered")
+    logger.debug("create_account endpoint returned")
     return account_crud.create_account(db=db, account=account)
 
 
@@ -24,7 +27,9 @@ def create_account(account: AccountCreate, db: Session = Depends(get_db)):
 def read_accounts(db: Session = Depends(get_db)):
     db_accounts = account_crud.get_accounts(db)
     if db_accounts is None:
+        logger.error("Account not found")
         raise HTTPException(status_code=404, detail="Accounts not found")
+    logger.debug("read_accounts endpoint returned")
     return db_accounts
 
 
@@ -32,6 +37,7 @@ def read_accounts(db: Session = Depends(get_db)):
 def read_account(account_id: int, db: Session = Depends(get_db)):
     db_account = account_crud.get_account(db, account_id=account_id)
     if db_account is None:
+        logger.error("Account not found")
         raise HTTPException(status_code=404, detail=f"Account {account_id} not found")
     return db_account
 
@@ -40,7 +46,9 @@ def read_account(account_id: int, db: Session = Depends(get_db)):
 def get_account_by_email(email: str, db: Session = Depends(get_db)):
     db_account = account_crud.get_account_by_email(db, email=email)
     if db_account is None:
+        logger.error("Account not found")
         raise HTTPException(status_code=404, detail=f"Account {email} not found")
+    logger.debug("get_account_by_email endpoint returned")
     return db_account
 
 
@@ -48,9 +56,11 @@ def get_account_by_email(email: str, db: Session = Depends(get_db)):
 def delete_account(account_id: int, db: Session = Depends(get_db)):
     account = account_crud.get_account(db, account_id)
     if account is None:
+        logger.error("Account not found")
         raise HTTPException(
             status_code=404, detail=f"Account with ID: {account_id} not found"
         )
+    logger.debug("delete_account endpoint returned")
     return account_crud.delete_account(db, account_id=account_id)
 
 
@@ -60,8 +70,10 @@ def update_account(
 ):
     db_account = account_crud.get_account(db, account_id)
     if db_account is None:
+        logger.error("Account not found")
         raise HTTPException(status_code=404, detail=f"Can't update ID: {account_id}")
     update_account = account_crud.update_account(
         db, account_id=db_account.id, account=account
     )
+    logger.debug("update_account endpoint returned")
     return update_account
