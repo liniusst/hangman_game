@@ -1,8 +1,7 @@
 import logging
 from datetime import datetime
-
-from app.models.game import Game
-from app.models.guess import Guess
+from backend.models.game import Game
+from backend.models.guess import Guess
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -21,6 +20,7 @@ def create_guess(db: Session, game_id: int, letter: str) -> Guess:
             db.commit()
             db.refresh(user_guess)
             return user_guess
+
         else:
             raise NoResultFound("Game not found for guess creation")
     except TypeError:

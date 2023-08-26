@@ -1,0 +1,8 @@
+.venv
+.vscode
+__pycache__
+backend.log
+frontend.log
+README.md
+sql_app.db
+.gitignore

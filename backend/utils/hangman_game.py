@@ -1,9 +1,9 @@
 import logging
 from datetime import datetime
 
-from app.crud.game_crud import get_game
-from app.crud.guess_crud import create_guess
-from app.models.game import Game
+from backend.crud.game_crud import get_game
+from backend.crud.guess_crud import create_guess
+from backend.models.game import Game
 from random_word import RandomWords
 from sqlalchemy.orm import Session
 

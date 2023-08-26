@@ -2,9 +2,8 @@ import logging
 from datetime import datetime
 from typing import List
 from typing import Optional
-
-import app.schemas.account_schemas as account_schemas
-from app.models.account import Account
+import backend.schemas.account_schemas as account_schemas
+from backend.models.account import Account
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 

@@ -1,0 +1,54 @@
+version: "3.11"
+
+services:
+  fastapi-backend-service:
+    container_name: fastapi-backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    volumes:
+      - .:/backend
+    ports:
+      - 1337:1337
+    depends_on:
+      - database
+    environment:
+      - SQLALCHEMY_DATABASE_URI=postgresql://hangman:h4ngm4npa55w0rd@hangman_database:5432/hangman_db
+      - SQLALCHEMY_MAX_POOL_OVERFLOW=20
+    networks:
+      - development
+
+  database:
+    container_name: hangman_database
+    image: postgres:15-alpine
+    volumes:
+      - postgre:/var/lib/postgresql/data/
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=hangman
+      - POSTGRES_PASSWORD=h4ngm4npa55w0rd
+      - POSTGRES_DB=hangman_db
+    networks:
+      - development
+
+  flask-frontend-service:
+    container_name: flask-frontend
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    volumes:
+      - .:/frontend
+    ports:
+      - "1338:1338"
+    networks:
+      - development
+    depends_on:
+      - fastapi-backend-service
+
+networks:
+  development:
+    driver: bridge
+
+volumes:
+  postgre:
