@@ -1,7 +1,7 @@
-from backend.logs.logger import logger
+from logs.logger import logger
 from datetime import datetime
-from backend.models.game import Game
-from backend.models.guess import Guess
+from models.game import Game
+from models.guess import Guess
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -9,6 +9,16 @@ from sqlalchemy.orm.exc import NoResultFound
 def create_guess(db: Session, game_id: int, letter: str) -> Guess:
     try:
         game = db.query(Game).filter(Game.id == game_id).first()
+
+        if not game:
+            logger.error(NoResultFound)
+            raise NoResultFound("Game not found for guess creation")
+
+        for guess in game.guesses:
+            if guess.guess_letter == letter:
+                logger.error(ValueError)
+                raise ValueError("Letter already guessed")
+
         now = datetime.now()
         if game:
             user_guess = Guess(
@@ -20,9 +30,7 @@ def create_guess(db: Session, game_id: int, letter: str) -> Guess:
             db.commit()
             db.refresh(user_guess)
             return user_guess
-        else:
-            logger.error(NoResultFound)
-            raise NoResultFound("Game not found for guess creation")
+
     except TypeError as error:
         logger.exception(error)
         raise TypeError("Game not found for guess creation")

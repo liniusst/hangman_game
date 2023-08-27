@@ -1,9 +1,9 @@
 import logging
 from datetime import datetime
 
-from backend.crud.game_crud import get_game
-from backend.crud.guess_crud import create_guess
-from backend.models.game import Game
+from crud.game_crud import get_game
+from crud.guess_crud import create_guess
+from models.game import Game
 from random_word import RandomWords
 from sqlalchemy.orm import Session
 
@@ -91,8 +91,13 @@ class Hangman(Base):
         game_word_set = game_data.game_word_set
         game_tries = game_data.game_tries
         game_status = game_data.status
+        game_guesses = game_data.guesses
 
-        guess = create_guess(db, game_id, letter)
+        for guess in game_guesses:
+            if letter != guess:
+                guess = create_guess(db, game_id, letter)
+            else:
+                print("cha")
 
         guessed_in_word = False
 

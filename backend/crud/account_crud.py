@@ -1,9 +1,9 @@
-from backend.logs.logger import logger
+from logs.logger import logger
 from datetime import datetime
 from typing import List
 from typing import Optional
-import backend.schemas.account_schemas as account_schemas
-from backend.models.account import Account
+import schemas.account_schemas as account_schemas
+from models.account import Account
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 
