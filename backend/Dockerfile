@@ -1,8 +1,9 @@
 FROM python:3.9
 
-WORKDIR /backend
+WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY backend/. /backend
+COPY backend/. /app
+EXPOSE 1337
 
-CMD ["uvicorn", "backend:app", "--host", "0.0.0.0", "--port", "1337"]
+CMD python main.py

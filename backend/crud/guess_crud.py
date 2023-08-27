@@ -1,7 +1,7 @@
-from backend.logs.logger import logger
+from logs.logger import logger
 from datetime import datetime
-from backend.models.game import Game
-from backend.models.guess import Guess
+from models.game import Game
+from models.guess import Guess
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -32,7 +32,7 @@ def create_guess(db: Session, game_id: int, letter: str) -> Guess:
         return None
 
 
-def get_guesses_by_game_id(db: Session, game_id: int) -> Guess:
+def get_guesses_by_game_id(db: Session, game_id: int) -> list[Guess]:
     try:
         game = db.query(Game).filter(Game.id == game_id).first()
         if game:

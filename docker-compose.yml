@@ -6,8 +6,6 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    volumes:
-      - .:/backend
     ports:
       - 1337:1337
     depends_on:

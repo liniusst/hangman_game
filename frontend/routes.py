@@ -1,7 +1,7 @@
 import frontend.forms as forms
 import frontend.models as models
 import requests
-from frontend.app import app, bcrypt
+from frontend.app import app, bcrypt, fastapi_url
 from flask import flash
 from flask import redirect
 from flask import render_template
@@ -20,7 +20,7 @@ login_manager = LoginManager(app)
 @login_manager.user_loader
 def load_user(user_id: int):
     try:
-        user_data = requests.get(f"http://127.0.0.1:1337/api/v1/accounts/{user_id}")
+        user_data = requests.get(f"{fastapi_url}/api/v1/accounts/{user_id}")
         if user_data.status_code == 200:
             user_dict = user_data.json()
             user = models.User(id=user_dict["id"], is_active=user_dict["is_active"])
@@ -57,7 +57,7 @@ def game():
 
     try:
         game_response = requests.post(
-            f"http://127.0.0.1:1337/api/v1/games/create/{current_user.id}"
+            f"{fastapi_url}/api/v1/games/create/{current_user.id}"
         )
 
         if game_response.status_code == 200:
@@ -94,7 +94,7 @@ def play_game():
         return redirect(url_for("game"))
     try:
         game_response = requests.post(
-            f"http://127.0.0.1:1337/api/v1/games/play/{game_id}", json=play_data
+            f"{fastapi_url}/api/v1/games/play/{game_id}", json=play_data
         )
         if game_response.status_code == 200:
             game_data = game_response.json()
@@ -103,9 +103,7 @@ def play_game():
             game_word_set = game_data.get("game_word_set")
             game_status = game_data.get("status")
 
-        guesses = requests.get(
-            f"http://127.0.0.1:1337/api/v1/guesses/game_guesses/{game_id}"
-        )
+        guesses = requests.get(f"{fastapi_url}/api/v1/guesses/game_guesses/{game_id}")
         if guesses.status_code == 200:
             guesses_data = guesses.json()
             user_guesses = [item.get("guess_letter") for item in guesses_data]
@@ -154,9 +152,7 @@ def reg_in():
             "username": form.username.data,
         }
         try:
-            response = requests.post(
-                "http://127.0.0.1:1337/api/v1/accounts", json=user_data
-            )
+            response = requests.post(f"{fastapi_url}/api/v1/accounts", json=user_data)
             if response.status_code == 200:
                 flash("Account created successfully!", "success")
                 logger.debug(f"New user {form.username.data} registered")
@@ -176,7 +172,7 @@ def reg_in():
 def get_user_games():
     user_id = current_user.id
     try:
-        response = requests.get(f"http://127.0.0.1:1337/api/v1/games/{user_id}")
+        response = requests.get(f"{fastapi_url}/api/v1/games/{user_id}")
         if response.status_code == 200:
             games = response.json()
             logger.debug("get_user_games retrieve games.")
@@ -194,9 +190,7 @@ def get_user_games():
 @login_required
 def account():
     try:
-        response = requests.get(
-            f"http://127.0.0.1:1337/api/v1/accounts/{current_user.id}"
-        )
+        response = requests.get(f"{fastapi_url}/api/v1/accounts/{current_user.id}")
         if response.status_code == 200:
             user = response.json()
     except requests.exceptions.RequestException as error:
@@ -204,9 +198,7 @@ def account():
         user = None
 
     try:
-        response = requests.get(
-            f"http://127.0.0.1:1337/api/v1/games/stats/{current_user.id}"
-        )
+        response = requests.get(f"{fastapi_url}/api/v1/games/stats/{current_user.id}")
         if response.status_code == 200:
             stats = response.json()
     except requests.exceptions.RequestException as error:
@@ -215,7 +207,7 @@ def account():
 
     try:
         response = requests.get(
-            f"http://127.0.0.1:1337/api/v1/games/stats/lasts/{current_user.id}"
+            f"{fastapi_url}/api/v1/games/stats/lasts/{current_user.id}"
         )
         if response.status_code == 200:
             five = response.json()
@@ -240,7 +232,7 @@ def account_update():
         update_data = {"email": form.email.data, "username": form.username.data}
         try:
             response = requests.patch(
-                f"http://127.0.0.1:1337/api/v1/accounts/{current_user.id}",
+                f"{fastapi_url}/api/v1/accounts/{current_user.id}",
                 json=update_data,
             )
             if response.status_code == 200:
@@ -261,9 +253,7 @@ def account_update():
 def password_change():
     form = forms.PasswordForm()
     if form.validate_on_submit():
-        response = requests.get(
-            f"http://127.0.0.1:1337/api/v1/accounts/{current_user.id}"
-        )
+        response = requests.get(f"{fastapi_url}/api/v1/accounts/{current_user.id}")
         user = response.json()
         user_password = user.get("password")
         if bcrypt.check_password_hash(user_password, form.old_password.data):
@@ -271,19 +261,17 @@ def password_change():
                 form.new_password_first.data
             ).decode("utf-8")
             update_data = {"password": new_password_hash}
-            rresponse = requests.patch(
-                f"http://127.0.0.1:1337/api/v1/accounts/{current_user.id}",
+            response = requests.patch(
+                f"{fastapi_url}/api/v1/accounts/{current_user.id}",
                 json=update_data,
             )
-            if rresponse.status_code == 200:
+            if response.status_code == 200:
                 flash("Your password has been updated!", "success")
                 return redirect(url_for("account"))
         else:
             logger.debug("Bad password, wrong old password.")
             flash("Failed to update. Check your password", "danger")
-    return render_template(
-        "password_update.html", title="Slaptažodžio keitimas", form=form
-    )
+    return render_template("password_update.html", form=form)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -292,7 +280,7 @@ def log_in():
     if form.validate_on_submit():
         try:
             response = requests.get(
-                f"http://127.0.0.1:1337/api/v1/accounts/email/{form.email.data}"
+                f"{fastapi_url}/api/v1/accounts/email/{form.email.data}"
             )
 
             if response.status_code == 200:
@@ -309,6 +297,10 @@ def log_in():
                 else:
                     logger.debug("Login failed, bad credentials.")
                     flash("Login failed. Check email email and password", "danger")
+            else:
+                logger.debug(f"User with email {form.email.data} not found.")
+                flash(f"User with email: {form.email.data} not found.", "danger")
+
         except requests.exceptions.RequestException as error:
             flash("Login failed, server error.", "danger")
             logger.error(f"Error while logging: {error}")

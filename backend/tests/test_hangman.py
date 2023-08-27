@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from backend.logs.logger import logger
-from backend.utils.hangman_game import Hangman
+from logs.logger import logger
+from utils.hangman_game import Hangman
 
 
 class TestGetRandomWord(unittest.TestCase):
