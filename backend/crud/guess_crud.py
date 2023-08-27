@@ -9,16 +9,6 @@ from sqlalchemy.orm.exc import NoResultFound
 def create_guess(db: Session, game_id: int, letter: str) -> Guess:
     try:
         game = db.query(Game).filter(Game.id == game_id).first()
-
-        if not game:
-            logger.error(NoResultFound)
-            raise NoResultFound("Game not found for guess creation")
-
-        for guess in game.guesses:
-            if guess.guess_letter == letter:
-                logger.error(ValueError)
-                raise ValueError("Letter already guessed")
-
         now = datetime.now()
         if game:
             user_guess = Guess(
@@ -30,7 +20,9 @@ def create_guess(db: Session, game_id: int, letter: str) -> Guess:
             db.commit()
             db.refresh(user_guess)
             return user_guess
-
+        else:
+            logger.error(NoResultFound)
+            raise NoResultFound("Game not found for guess creation")
     except TypeError as error:
         logger.exception(error)
         raise TypeError("Game not found for guess creation")
@@ -40,7 +32,7 @@ def create_guess(db: Session, game_id: int, letter: str) -> Guess:
         return None
 
 
-def get_guesses_by_game_id(db: Session, game_id: int) -> Guess:
+def get_guesses_by_game_id(db: Session, game_id: int) -> list[Guess]:
     try:
         game = db.query(Game).filter(Game.id == game_id).first()
         if game:

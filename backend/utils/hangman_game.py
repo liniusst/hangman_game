@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from logs.logger import logger
 
 from crud.game_crud import get_game
 from crud.guess_crud import create_guess
@@ -83,52 +84,61 @@ class Base:
 
 class Hangman(Base):
     def play_game(self, db: Session, game_id: int, letter: str):
-        game_data = get_game(db, game_id)
+        try:
+            game_data = get_game(db, game_id)
 
-        game_word = game_data.game_word
-        game_display_list = list(game_data.game_display)
-        game_blanks = game_data.game_blanks
-        game_word_set = game_data.game_word_set
-        game_tries = game_data.game_tries
-        game_status = game_data.status
-        game_guesses = game_data.guesses
+            game_word = game_data.game_word
+            game_display_list = list(game_data.game_display)
+            game_blanks = game_data.game_blanks
+            game_word_set = game_data.game_word_set
+            game_tries = game_data.game_tries
+            game_status = game_data.status
 
-        for guess in game_guesses:
-            if letter != guess:
-                guess = create_guess(db, game_id, letter)
+            new_guess = None
+            repeated_guess = False
+
+            for exist_guess in game_data.guesses:
+                if exist_guess.guess_letter == letter:
+                    repeated_guess = True
+                    break
             else:
-                print("cha")
+                new_guess = create_guess(db, game_id, letter)
 
-        guessed_in_word = False
+            guessed_in_word = False
 
-        for num, char in enumerate(game_word):
-            if char == guess.guess_letter:
-                guessed_in_word = True
-                game_display_list[num] = letter
-                game_blanks -= 1
+            for num, char in enumerate(game_word):
+                if new_guess is not None:
+                    if char == new_guess.guess_letter and repeated_guess == False:
+                        guessed_in_word = True
+                        game_display_list[num] = letter
+                        game_blanks -= 1
 
-        game_word_set = game_word_set.replace(letter, "")
-        game_display = "".join(game_display_list)
+            game_word_set = game_word_set.replace(letter, "")
+            game_display = "".join(game_display_list)
 
-        if guessed_in_word == False:
-            game_tries += 1
-            if game_tries == self.max_tries:
-                game_status = "LOSS"
+            if guessed_in_word == False and repeated_guess == False:
+                game_tries += 1
+                if game_tries == self.max_tries:
+                    game_status = "LOSS"
 
-        if game_blanks == 0:
-            game_status = "WIN"
+            if game_blanks == 0:
+                game_status = "WIN"
 
-        update_game_data = {
-            "game_blanks": game_blanks,
-            "game_display": game_display,
-            "game_tries": game_tries,
-            "game_word": game_word,
-            "game_word_set": game_word_set,
-            "status": game_status,
-        }
+            update_game_data = {
+                "game_blanks": game_blanks,
+                "game_display": game_display,
+                "game_tries": game_tries,
+                "game_word": game_word,
+                "game_word_set": game_word_set,
+                "status": game_status,
+            }
 
-        for key, value in update_game_data.items():
-            setattr(game_data, key, value)
-        db.commit()
+            for key, value in update_game_data.items():
+                setattr(game_data, key, value)
+            db.commit()
+            return game_data
 
-        return game_data
+        except Exception as error:
+            logger.exception("An error occurred: %s", str(error))
+            db.rollback()
+            raise
