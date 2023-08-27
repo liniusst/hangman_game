@@ -1,6 +1,5 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from logs.logger import logger
 from utils.hangman_game import Hangman
 
 
@@ -11,7 +10,7 @@ class TestGetRandomWord(unittest.TestCase):
         self.game_display = ""
         self.game_blanks = 8
 
-    @patch("backend.utils.hangman_game.RandomWords")
+    @patch("utils.hangman_game.RandomWords")
     def test_get_random_word(self, mock_random_words):
         mock_hangman = MagicMock()
         mock_hangman.get_random_word.return_value = self.game_word

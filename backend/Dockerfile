@@ -6,4 +6,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/. /app
 EXPOSE 1337
 
-CMD python main.py
+CMD python -m unittest -v; python main.py
