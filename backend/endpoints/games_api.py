@@ -22,6 +22,16 @@ def create_game(account_id: int, db: Session = Depends(get_db)):
     return hang.create_game(db, db_account.id)
 
 
+@router.post("/play/{game_id}", response_model=GameUpdate)
+def play_game(guess: Guess, db: Session = Depends(get_db)):
+    hang = Hangman()
+    set_play_game = hang.play_game(db, game_id=guess.game_id, letter=guess.guess_letter)
+    if set_play_game is None:
+        logger.error("Can't start new game")
+        raise HTTPException(status_code=400, detail="Can't start new game")
+    return set_play_game
+
+
 @router.get("/game_data/{game_id}", response_model=GameResponse)
 def get_game_by_game_id(game_id: int, db: Session = Depends(get_db)):
     db_game = game_crud.get_game(db, game_id)
@@ -60,23 +70,3 @@ def get_user_last_five_games(account_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Acount not found")
     logger.info("get_user_last_five_games endpoint returned")
     return game_crud.get_user_last_five_games(db, db_account.id)
-
-
-@router.post("/play/{game_id}", response_model=GameUpdate)
-def play_game(guess: Guess, db: Session = Depends(get_db)):
-    hang = Hangman()
-    set_play_game = hang.play_game(db, game_id=guess.game_id, letter=guess.guess_letter)
-    if set_play_game is None:
-        logger.error("Can't start new game")
-        raise HTTPException(status_code=400, detail="Can't start new game")
-    return set_play_game
-
-
-@router.patch("/update/{game_id}", response_model=GameUpdate)
-def update_game(game_id: int, game: GameUpdate, db: Session = Depends(get_db)):
-    db_game = game_crud.get_game(db, game_id)
-    if db_game is None:
-        logger.error("Game not found")
-        raise HTTPException(status_code=404, detail="Game not found")
-    logger.info("update_game endpoint returned")
-    return update_game(db, db_game.id, game)

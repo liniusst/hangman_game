@@ -54,30 +54,6 @@ class GameResponse(BaseModel):
         }
 
 
-class GameUpdateResponse(BaseModel):
-    id: int
-    game_word: str
-    game_tries: int
-    game_blanks: int
-    game_display: str
-    game_word_set: str
-    status: Literal["NEW", "WIN", "LOSS"]
-
-    class Config:
-        from_attributes = True
-        json_schema_extra = {
-            "example": {
-                "id": 1,
-                "game_word": "fantastico",
-                "game_tries": 7,
-                "game_blanks": 3,
-                "game_display": "___",
-                "game_word_set": "abcc",
-                "status": "WIN",
-            }
-        }
-
-
 class GameStatsResponse(BaseModel):
     total_games: int
     total_win: int

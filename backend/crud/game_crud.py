@@ -1,6 +1,5 @@
-from typing import Dict, Optional
+from typing import Dict
 
-import schemas.games_schemas as game_schemas
 from logs.logger import logger
 from models.account import Account
 from models.game import Game
@@ -91,25 +90,4 @@ def get_user_games_stats(db: Session, user_id: int) -> Dict:
         return stats
     except Exception as error:
         logger.error(error)
-        return None
-
-
-def update_game(
-    db: Session, game_id: int, game: game_schemas.GameUpdate
-) -> Optional[Game]:
-    try:
-        db_game = get_game(db, game_id)
-        if db_game:
-            game_data = game.model_dump(exclude_unset=True)
-            for key, value in game_data.items():
-                setattr(db_game, key, value)
-            db.commit()
-            logger.debug("Game updated")
-            return db_game
-        else:
-            logger.error(NoResultFound)
-            raise NoResultFound("Game not found for update")
-    except Exception as error:
-        logger.error(error)
-        db.rollback()
         return None
