@@ -3,4 +3,3 @@
 __pycache__
 backend.log
 frontend.log
-sql_app.db
