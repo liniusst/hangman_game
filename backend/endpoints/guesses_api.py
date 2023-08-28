@@ -1,12 +1,9 @@
 import crud.game_crud as game_crud
 import crud.guess_crud as guess_crud
-from logs.logger import logger
 from database import get_db
-from schemas.guess_schemas import Guess
-from schemas.guess_schemas import GuessResponse
-from fastapi import APIRouter
-from fastapi import Depends
-from fastapi import HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from logs.logger import logger
+from schemas.guess_schemas import Guess, GuessResponse
 from sqlalchemy.orm import Session
 
 router = APIRouter()

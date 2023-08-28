@@ -1,5 +1,6 @@
-from logs.logger import logger
 from datetime import datetime
+
+from logs.logger import logger
 from models.game import Game
 from models.guess import Guess
 from sqlalchemy.orm import Session

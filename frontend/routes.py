@@ -1,17 +1,16 @@
+import requests
+from flask import flash, redirect, render_template, request, url_for
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
+
 import frontend.forms as forms
 import frontend.models as models
-import requests
 from frontend.app import app, bcrypt, fastapi_url
-from flask import flash
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import url_for
-from flask_login import current_user
-from flask_login import login_required
-from flask_login import login_user
-from flask_login import LoginManager
-from flask_login import logout_user
 from frontend.logs.logger import logger
 
 login_manager = LoginManager(app)

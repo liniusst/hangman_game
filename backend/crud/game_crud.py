@@ -1,6 +1,7 @@
-from logs.logger import logger
-from typing import Optional
+from typing import Dict, Optional
+
 import schemas.games_schemas as game_schemas
+from logs.logger import logger
 from models.account import Account
 from models.game import Game
 from sqlalchemy import desc
@@ -40,7 +41,7 @@ def get_user_last_five_games(db: Session, user_id: int) -> list[Game]:
         return []
 
 
-def get_games_by_user_id(db: Session, user_id: int) -> Account:
+def get_games_by_user_id(db: Session, user_id: int) -> list[Game]:
     try:
         user = db.query(Account).filter(Account.id == user_id).first()
         if user:
@@ -60,7 +61,7 @@ def get_games_by_user_id(db: Session, user_id: int) -> Account:
         return []
 
 
-def get_user_games_stats(db: Session, user_id: int):
+def get_user_games_stats(db: Session, user_id: int) -> Dict:
     win_games = []
     loss_games = []
     new_games = []
