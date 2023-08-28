@@ -1,16 +1,12 @@
 import crud.account_crud as account_crud
 import crud.game_crud as game_crud
-from logs.logger import logger
 from database import get_db
-from schemas.games_schemas import GameStatsResponse
-from schemas.games_schemas import GameResponse
-from schemas.games_schemas import GameUpdate
+from fastapi import APIRouter, Depends, HTTPException
+from logs.logger import logger
+from schemas.games_schemas import GameResponse, GameStatsResponse, GameUpdate
 from schemas.guess_schemas import Guess
-from utils.hangman_game import Hangman
-from fastapi import APIRouter
-from fastapi import Depends
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
+from utils.hangman_game import Hangman
 
 router = APIRouter()
 

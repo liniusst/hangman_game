@@ -1,8 +1,8 @@
-from logs.logger import logger
 from datetime import datetime
-from typing import List
-from typing import Optional
+from typing import List, Optional
+
 import schemas.account_schemas as account_schemas
+from logs.logger import logger
 from models.account import Account
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound

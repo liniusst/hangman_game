@@ -1,11 +1,10 @@
-import sys
 import os
-from database import Base
-from database import engine
-from router.router import api_router
-from fastapi import FastAPI
-import uvicorn
+import sys
 
+import uvicorn
+from database import Base, engine
+from fastapi import FastAPI
+from router.router import api_router
 
 root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(root_path)

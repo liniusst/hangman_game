@@ -1,6 +1,4 @@
-from endpoints import accounts_api
-from endpoints import games_api
-from endpoints import guesses_api
+from endpoints import accounts_api, games_api, guesses_api
 from fastapi import APIRouter
 
 api_router = APIRouter()
