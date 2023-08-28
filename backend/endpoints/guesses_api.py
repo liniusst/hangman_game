@@ -10,12 +10,12 @@ router = APIRouter()
 
 
 @router.post("/create/", response_model=GuessResponse)
-def create_guess(guess: Guess, db: Session = Depends(get_db)):
+def create_game_guess(guess: Guess, db: Session = Depends(get_db)):
     db_game = game_crud.get_game(db, guess.game_id)
     if db_game is None:
         logger.error("Game not found")
         raise HTTPException(status_code=404, detail="Game not found")
-    return create_guess(db, game_id=guess.game_id, letter=guess.guess_letter)
+    return guess_crud.create_guess(db, game_id=guess.game_id, letter=guess.guess_letter)
 
 
 @router.get("/game_guesses/{game_id}", response_model=list[GuessResponse])
